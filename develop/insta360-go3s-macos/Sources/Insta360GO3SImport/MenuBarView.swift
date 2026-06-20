@@ -8,10 +8,10 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 8) {
                 Circle()
-                    .fill(appState.connection.ok ? IMovieTheme.accentGreen : Color.red.opacity(0.85))
+                    .fill(statusDotColor)
                     .frame(width: 8, height: 8)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(appState.connection.ok ? L10n.connected : L10n.notConnected)
+                    Text(appState.connection.statusTitle)
                         .font(.system(size: 13, weight: .semibold))
                     Text(appState.connection.ssid ?? L10n.connectGO3SWifi(""))
                         .font(.system(size: 11))
@@ -95,6 +95,17 @@ struct MenuBarView: View {
         .padding(14)
         .frame(width: 280)
         .background(Color(nsColor: .windowBackgroundColor))
+    }
+
+    private var statusDotColor: Color {
+        switch appState.connection.statusColor {
+        case .connected:
+            return IMovieTheme.accentGreen
+        case .wifiOnly:
+            return Color.orange
+        case .disconnected:
+            return Color.red.opacity(0.85)
+        }
     }
 
     private func progressValue(written: Int64, total: Int64?) -> Double {

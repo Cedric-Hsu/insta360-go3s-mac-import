@@ -106,10 +106,10 @@ private struct ConnectionBadge: View {
         Button(action: onDiagnose) {
             HStack(spacing: 8) {
                 Circle()
-                    .fill(connection.ok ? IMovieTheme.accentGreen : Color.red.opacity(0.8))
+                    .fill(statusDotColor)
                     .frame(width: 8, height: 8)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(connection.ok ? L10n.connected : L10n.notConnected)
+                    Text(connection.statusTitle)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(IMovieTheme.textPrimary)
                     Text(connection.ssid ?? L10n.defaultWifiSSID)
@@ -127,5 +127,16 @@ private struct ConnectionBadge: View {
         }
         .buttonStyle(.plain)
         .help(L10n.refreshConnectionHelp(connected: connection.ok))
+    }
+
+    private var statusDotColor: Color {
+        switch connection.statusColor {
+        case .connected:
+            return IMovieTheme.accentGreen
+        case .wifiOnly:
+            return Color.orange
+        case .disconnected:
+            return Color.red.opacity(0.8)
+        }
     }
 }

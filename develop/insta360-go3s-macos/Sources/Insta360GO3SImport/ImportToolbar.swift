@@ -14,6 +14,7 @@ struct ImportToolbar: View {
                     .font(.system(size: 12))
                     .foregroundStyle(IMovieTheme.textSecondary)
                     .lineLimit(2)
+                    .frame(minHeight: 34, alignment: .topLeading)
             }
 
             Spacer()
@@ -109,17 +110,8 @@ struct ImportToolbar: View {
         if appState.isDiagnosing && !appState.connection.ok {
             return L10n.diagnosing
         }
-        if let progress = appState.thumbnailLoader.remoteThumbnailProgress {
-            return L10n.generatingRemoteThumbnails(done: progress.done, total: progress.total)
-        }
-        if appState.isLoadingMoreFiles, let total = appState.remoteTotalCount {
-            return L10n.loadingMoreFiles(loaded: appState.remoteLoadedCount, total: total)
-        }
         if appState.isLoading && appState.visibleClips.isEmpty && !appState.hasCameraClips {
             return L10n.loadingFileList
-        }
-        if appState.isLoading && !appState.visibleClips.isEmpty {
-            return L10n.refreshingList
         }
 
         switch appState.selectedSection {

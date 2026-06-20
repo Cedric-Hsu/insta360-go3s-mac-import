@@ -127,7 +127,8 @@ final class AppState: ObservableObject {
                 ok: json["ok"] as? Bool ?? false,
                 ssid: json["ssid"] as? String,
                 pingMessage: json["ping_message"] as? String ?? "",
-                looksLikeGo3s: json["looks_like_go3s"] as? Bool ?? false
+                looksLikeGo3s: json["looks_like_go3s"] as? Bool ?? false,
+                wifiOnly: json["wifi_only"] as? Bool ?? false
             )
             if connection.ok {
                 statusMessage = connectionSubtitle(for: selectedSection)
@@ -202,6 +203,7 @@ final class AppState: ObservableObject {
             }
             clips = []
             statusMessage = error.localizedDescription
+            await refreshConnection()
         }
     }
 
@@ -769,9 +771,6 @@ final class AppState: ObservableObject {
     }
 
     func connectionSubtitle(for section: SidebarSection) -> String {
-        if isLoadingMoreFiles, let total = remoteTotalCount, total > 0 {
-            return L10n.loadingMoreFiles(loaded: remoteLoadedCount, total: total)
-        }
         switch section {
         case .camera:
             let imported = clips.filter(\.isImported).count

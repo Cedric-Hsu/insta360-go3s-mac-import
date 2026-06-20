@@ -12,6 +12,9 @@ def test_connection_status_shape():
     assert "ok" in payload
     assert "ping_ok" in payload
     assert "tcp6666_ok" in payload
+    assert "sync_ok" in payload
+    assert "wifi_only" in payload
+    assert payload["ok"] is False
 
 
 def test_import_ready_requires_link_and_probe():

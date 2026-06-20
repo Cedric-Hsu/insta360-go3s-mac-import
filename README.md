@@ -158,7 +158,7 @@ Python stack also uses [Typer](https://github.com/tiangolo/typer), [Rich](https:
 - **Unofficial.** Not affiliated with, endorsed by, or sponsored by Insta360 or Arash Vision.
 - Insta360®, GO 3S™, and related marks are trademarks of their respective owners.
 - Uses community protocol research; may stop working after camera firmware or app updates.
-- **If you believe this project infringes your rights**, please contact: **[xunyu2017@gmail.com](mailto:xunyu2017@gmail.com)** — I will review and respond promptly.
+- **If you believe this project infringes your rights**, please contact: **[smith@kwverdit.com](mailto:smith@kwverdit.com)** — I will review and respond promptly.
 
 ---
 
@@ -173,4 +173,4 @@ The bundled [`insta360`](https://pypi.org/project/insta360/) Python package is *
 ## Contact
 
 - Issues & feature requests: [GitHub Issues](https://github.com/Cedric-Hsu/insta360-go3s-mac-import/issues)
-- Email: [xunyu2017@gmail.com](mailto:xunyu2017@gmail.com)
+- Email: [smith@kwverdit.com](mailto:smith@kwverdit.com)

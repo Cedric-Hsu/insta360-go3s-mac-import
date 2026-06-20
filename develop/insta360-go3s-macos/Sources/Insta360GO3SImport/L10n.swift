@@ -55,6 +55,9 @@ enum L10n {
     }
     static var connected: String { pick("相机已连接", "Camera connected") }
     static var notConnected: String { pick("未连接", "Not connected") }
+    static var wifiOnlyConnected: String {
+        pick("仅 WiFi 已连接", "WiFi only — pair app + Quick File Transfer")
+    }
     static func refreshConnectionHelp(connected: Bool) -> String {
         connected
             ? pick("刷新连接与文件列表", "Refresh connection and file list")

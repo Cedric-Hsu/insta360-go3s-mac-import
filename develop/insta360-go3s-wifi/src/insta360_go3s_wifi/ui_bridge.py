@@ -16,6 +16,7 @@ from insta360_go3s_wifi.json_api import (
     files_payload,
     import_result_to_dict,
 )
+from insta360_go3s_wifi.go3s_protocol import probe_tcp_handshake
 from insta360_go3s_wifi.network import (
     DEFAULT_CAMERA_HOST,
     check_wifi_for_go3s,
@@ -53,16 +54,26 @@ def connection_status(host: str = DEFAULT_CAMERA_HOST) -> Dict[str, Any]:
             if not tcp6666.ok:
                 with timed_step("connection_status", "tcp80", host=host):
                     tcp80 = tcp_reachable(host, 80)
-        ok = ping.ok or tcp6666.ok or tcp80.ok
+        sync_ok = False
+        sync_detail = ""
+        if wifi.looks_like_go3s or ping.ok or tcp6666.ok:
+            with timed_step("connection_status", "tcp_probe", host=host):
+                sync_ok, sync_detail, _, _banner_seen = probe_tcp_handshake(host)
+        link_ok = ping.ok or tcp6666.ok
+        ok = link_ok and sync_ok
         looks_like_go3s = wifi.looks_like_go3s or ping.ok
+        wifi_only = looks_like_go3s and not ok
         log_event(
             "connection_status",
             "result",
             extra={
                 "ok": ok,
+                "link_ok": link_ok,
+                "sync_ok": sync_ok,
                 "ping_ok": ping.ok,
                 "tcp6666_ok": tcp6666.ok,
                 "tcp80_ok": tcp80.ok,
+                "wifi_only": wifi_only,
                 "looks_like_go3s": looks_like_go3s,
                 "ssid": wifi.ssid or "",
             },
@@ -74,6 +85,10 @@ def connection_status(host: str = DEFAULT_CAMERA_HOST) -> Dict[str, Any]:
         "ping_message": ping.message,
         "tcp6666_ok": tcp6666.ok,
         "tcp80_ok": tcp80.ok,
+        "sync_ok": sync_ok,
+        "sync_detail": sync_detail,
+        "link_ok": link_ok,
+        "wifi_only": wifi_only,
         "ssid": wifi.ssid,
         "looks_like_go3s": looks_like_go3s,
     }

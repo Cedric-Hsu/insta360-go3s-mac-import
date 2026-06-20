@@ -196,6 +196,27 @@ struct ConnectionInfo: Equatable {
     var ssid: String?
     var pingMessage: String = ""
     var looksLikeGo3s: Bool = false
+    var wifiOnly: Bool = false
+
+    var showsConnected: Bool { ok }
+
+    var statusTitle: String {
+        if ok { return L10n.connected }
+        if wifiOnly || looksLikeGo3s { return L10n.wifiOnlyConnected }
+        return L10n.notConnected
+    }
+
+    var statusColor: ConnectionStatusColor {
+        if ok { return .connected }
+        if wifiOnly || looksLikeGo3s { return .wifiOnly }
+        return .disconnected
+    }
+}
+
+enum ConnectionStatusColor {
+    case connected
+    case wifiOnly
+    case disconnected
 }
 
 enum ImportPhase: Equatable {

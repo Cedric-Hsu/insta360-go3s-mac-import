@@ -1,5 +1,23 @@
 import SwiftUI
 
+private struct BrowserProgressOverlay: View {
+    let message: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ProgressView().controlSize(.small)
+            Text(message)
+                .font(.system(size: 12))
+                .foregroundStyle(IMovieTheme.textSecondary)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(.ultraThinMaterial, in: Capsule())
+        .padding(.top, 12)
+    }
+}
+
 struct MediaBrowserView: View {
     @EnvironmentObject private var appState: AppState
 
@@ -7,8 +25,24 @@ struct MediaBrowserView: View {
         GridItem(.adaptive(minimum: IMovieTheme.cardWidth, maximum: IMovieTheme.cardWidth), spacing: 18),
     ]
 
+    private var progressOverlayMessage: String? {
+        if let progress = appState.thumbnailLoader.remoteThumbnailProgress {
+            return L10n.generatingRemoteThumbnails(done: progress.done, total: progress.total)
+        }
+        if appState.isLoadingMoreFiles {
+            if let total = appState.remoteTotalCount {
+                return L10n.loadingMoreFiles(loaded: appState.remoteLoadedCount, total: total)
+            }
+            return L10n.loadingMoreFilesGeneric
+        }
+        if appState.isLoading && !appState.visibleClips.isEmpty {
+            return L10n.refreshing
+        }
+        return nil
+    }
+
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             if appState.visibleClips.isEmpty {
                 if appState.isLoading {
                     ProgressView(L10n.loadingFileList)
@@ -24,59 +58,12 @@ struct MediaBrowserView: View {
                         }
                     }
                     .padding(22)
+                    .padding(.top, 44)
                 }
+            }
 
-                if appState.isLoadingMoreFiles {
-                    VStack {
-                        Spacer()
-                        HStack(spacing: 8) {
-                            ProgressView().controlSize(.small)
-                            if let total = appState.remoteTotalCount {
-                                Text(L10n.loadingMoreFiles(loaded: appState.remoteLoadedCount, total: total))
-                            } else {
-                                Text(L10n.loadingMoreFilesGeneric)
-                            }
-                        }
-                        .font(.system(size: 12))
-                        .foregroundStyle(IMovieTheme.textSecondary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(.ultraThinMaterial, in: Capsule())
-                        .padding(.bottom, 16)
-                    }
-                }
-
-                if let progress = appState.thumbnailLoader.remoteThumbnailProgress {
-                    VStack {
-                        HStack(spacing: 8) {
-                            ProgressView().controlSize(.small)
-                            Text(L10n.generatingRemoteThumbnails(done: progress.done, total: progress.total))
-                        }
-                        .font(.system(size: 12))
-                        .foregroundStyle(IMovieTheme.textSecondary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(.ultraThinMaterial, in: Capsule())
-                        .padding(.top, 12)
-                        Spacer()
-                    }
-                }
-
-                if appState.isLoading {
-                    VStack {
-                        HStack(spacing: 8) {
-                            ProgressView().controlSize(.small)
-                            Text(L10n.refreshing)
-                        }
-                        .font(.system(size: 12))
-                        .foregroundStyle(IMovieTheme.textSecondary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(.ultraThinMaterial, in: Capsule())
-                        .padding(.top, 12)
-                        Spacer()
-                    }
-                }
+            if let message = progressOverlayMessage {
+                BrowserProgressOverlay(message: message)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
