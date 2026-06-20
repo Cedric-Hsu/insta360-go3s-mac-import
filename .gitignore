@@ -1,0 +1,24 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+*.part
+
+# macOS / Swift
+.build/
+dist/
+*.dSYM/
+.DS_Store
+
+# Local test artifacts
+test-download/
+downloads/
+*.log
+
+# IDE
+.idea/
+*.xcuserstate
